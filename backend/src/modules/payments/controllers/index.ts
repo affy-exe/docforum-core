@@ -79,3 +79,5 @@ export async function listFacilityLedger(req: Request, res: Response) {
   const filters = paymentHistoryQuerySchema.parse(req.query);
   res.status(200).json(await paymentsService.listFacilityPaymentLedger(req.user.id, filters));
 }
+
+export { sep10Challenge, sep10Verify } from './sep10';

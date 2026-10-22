@@ -168,4 +168,12 @@ export const config = {
     payoutPrivacyMode,
     payoutPrivacyPoolAddress: process.env.PAYOUT_PRIVACY_POOL_ADDRESS,
   },
+  sep10: {
+    signingSecret: process.env.SEP10_SIGNING_SECRET ?? 'SAJA63DCNQSJ66J4QRWBHXU3XM37PGKJUNLN7GMNQCPN5P6ZMQSKABWB',
+    homeDomain: process.env.SEP10_HOME_DOMAIN ?? 'localhost',
+    webAuthDomain: process.env.SEP10_WEB_AUTH_DOMAIN ?? 'localhost',
+    challengeTimeoutSeconds: Number(process.env.SEP10_CHALLENGE_TIMEOUT_SECONDS ?? 300),
+    networkPassphrase: process.env.SEP10_NETWORK_PASSPHRASE ?? 'Test SDF Network ; September 2015',
+    horizonUrl: process.env.SEP10_HORIZON_URL ?? 'https://horizon-testnet.stellar.org',
+  },
 } as const;

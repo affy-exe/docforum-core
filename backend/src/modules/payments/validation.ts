@@ -42,6 +42,14 @@ const inclusiveEndDate = isoDateString.transform((value) => {
   return date;
 });
 
+export const sep10ChallengeQuerySchema = z.object({
+  account: z.string().min(1, 'account query parameter is required'),
+});
+
+export const sep10VerifySchema = z.object({
+  transaction: z.string().min(1, 'transaction body parameter is required'),
+});
+
 export const paymentHistoryQuerySchema = z
   .object({
     status: z.enum(['created', 'escrowed', 'released', 'refunded', 'failed']).optional(),
