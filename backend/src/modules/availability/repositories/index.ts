@@ -14,6 +14,13 @@ export function findSlotById(db: DbClient, slotId: string) {
   return db.availabilitySlot.findUnique({ where: { id: slotId } });
 }
 
+export function findSlotTimesByIds(slotIds: string[]) {
+  return prisma.availabilitySlot.findMany({
+    where: { id: { in: slotIds } },
+    select: { id: true, startTime: true, endTime: true },
+  });
+}
+
 export function findExistingSlotRanges(doctorProfileId: string, startTime: Date, endTime: Date) {
   return prisma.availabilitySlot.findMany({
     where: { doctorProfileId, startTime: { gte: startTime }, endTime: { lte: endTime } },
@@ -43,6 +50,21 @@ export async function claimOpenSlot(db: DbClient, slotId: string): Promise<boole
   const result = await db.availabilitySlot.updateMany({
     where: { id: slotId, status: 'open' },
     data: { status: 'booked' },
+  });
+  return result.count === 1;
+}
+
+/**
+ * Inverse of claimOpenSlot, used when a FUTURE booked slot is freed by a
+ * cancellation (direct booking or the referral cascade). Conditional on
+ * both `booked` and `startTime > now` — a slot whose time has passed is
+ * left alone: the visit happened (or didn't) either way, and re-opening
+ * it would put unbookable time back on the calendar.
+ */
+export async function releaseBookedSlotIfFuture(db: DbClient, slotId: string): Promise<boolean> {
+  const result = await db.availabilitySlot.updateMany({
+    where: { id: slotId, status: 'booked', startTime: { gt: new Date() } },
+    data: { status: 'open' },
   });
   return result.count === 1;
 }
